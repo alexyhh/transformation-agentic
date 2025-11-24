@@ -538,6 +538,109 @@ def main_app():
                 st.markdown("**Analysis:**")
                 st.markdown(entry['output'])
 
+def about_page():
+    """About Us page content"""
+    st.title("ℹ️ About the Transformation Agentic Assistant")
+    st.markdown("---")
+
+    st.markdown("""
+    ### Project Overview
+
+    The **Transformation Agentic Assistant** is a prototype web application that helps transformation
+    managers and leaders make sense of complex situations by turning free-text descriptions into a
+    structured, executive-ready analysis.
+
+    Instead of a simple one-shot chatbot, this app demonstrates a **multi-agent workflow**:
+    eight specialised AI "agents" work **sequentially** to break down the situation, analyse risks
+    and stakeholders, recommend frameworks, and generate an integrated report.
+
+    The app is built as a **Streamlit** web application with:
+    - ✅ **Password-protected access** (demo accounts: `admin` / `manager`)
+    - ✅ A **single input interface** for describing transformation situations
+    - ✅ An **agentic analysis pipeline** with 8 specialised agents
+    - ✅ **Live observability** (progress bar, metrics, "live agent thoughts")
+    - ✅ An **analysis history** section for reviewing past runs
+    """)
+
+    st.markdown("### Scope of the Project")
+    st.markdown("""
+    This project focuses on **one primary use case** and one supporting use case:
+
+    1. **Use Case A – Deep Agentic Transformation Analysis**  
+       The user describes a transformation situation (e.g. project challenges, team dynamics,
+       risks, and timelines). The assistant runs an 8-step agentic workflow to produce:
+       - A structured analysis of risks and stakeholders  
+       - Relevant change management frameworks  
+       - A prioritised action plan  
+       - An executive-style synthesis report  
+
+    2. **Use Case B – Analysis History & Reflection**  
+       After each run, the key input and final report are saved to a lightweight history.
+       Users can revisit recent analyses to:
+       - Review earlier situations and recommendations  
+       - Compare multiple cases over time  
+       - Reuse or refine insights for follow-up actions  
+    """)
+
+    st.markdown("### Objectives")
+    st.markdown("""
+    The objectives of this project are to:
+
+    - **Demonstrate an agentic pattern** using multiple specialised AI agents instead of a single prompt.
+    - **Support transformation decision-making** with structured, repeatable analysis.
+    - **Show observability features** (time taken per agent, progress, live thoughts) so users can
+      understand *how* the AI reaches its recommendations.
+    - Implement **basic access control** (login) and safe usage patterns for LLMs.
+    """)
+
+    st.markdown("### Intended Users")
+    st.markdown("""
+    This assistant is designed for:
+
+    - Transformation / change management teams  
+    - Project and programme managers  
+    - Digital transformation offices  
+    - Leaders who need quick, structured insight from narrative updates
+    """)
+
+    st.markdown("### Data Sources & Privacy")
+    st.markdown("""
+    - The only primary data source is the **text that the user types into the app**.  
+    - No external documents or databases are queried in this prototype.  
+    - The app does **not** store data permanently in a database; recent runs are kept only in
+      the in-memory **session state** for the current session's "Analysis History".  
+    - The LLM backend (e.g. OpenAI GPT-4) is used for:
+      - Understanding the user's description  
+      - Running each specialised agent  
+      - Generating the final report  
+
+    This prototype is intended for demonstration and learning purposes only. Users should avoid
+    entering confidential or personal data.
+    """)
+
+    st.markdown("### Key Features")
+    st.markdown("""
+    - 🔐 **Password-protected login** using hashed demo credentials  
+    - 🤝 **8 specialised AI agents**:
+        - 🎯 Orchestrator  
+        - 📊 Data Extraction  
+        - ⚠️ Risk Analysis  
+        - 👥 Stakeholder Analysis  
+        - 📚 Framework Advisor  
+        - 📋 Action Planning  
+        - ✓ Quality Assurance  
+        - 🎨 Synthesis  
+    - 📊 **Observability dashboard**:
+        - Overall progress bar  
+        - Time elapsed and estimated remaining time  
+        - Per-agent status and timing  
+        - "Live Agent Thoughts" section showing intermediate outputs  
+    - 📜 **Analysis History** showing recent runs for quick review
+
+    Together, these features show how agentic AI can support transformation management in a
+    structured, explainable way.
+    """)
+
 # Main application logic
 if not st.session_state.authenticated:
     login_page()
