@@ -542,4 +542,18 @@ def main_app():
 if not st.session_state.authenticated:
     login_page()
 else:
-    main_app()
+    # Simple navigation inside the authenticated area
+    with st.sidebar:
+        st.markdown("### 📄 Pages")
+        page = st.radio(
+            "Go to",
+            ["Agentic Assistant", "About Us", "Methodology"],
+            index=0
+        )
+
+    if page == "Agentic Assistant":
+        main_app()
+    elif page == "About Us":
+        about_page()
+    elif page == "Methodology":
+        methodology_page()
