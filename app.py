@@ -641,6 +641,230 @@ def about_page():
     structured, explainable way.
     """)
 
+def methodology_page():
+    """Methodology page content"""
+    st.title("🧩 Methodology & System Design")
+    st.markdown("---")
+
+    st.markdown("### 1. High-Level Architecture")
+
+    st.markdown("""
+    At a high level, the Transformation Agentic Assistant consists of:
+
+    1. **User Interface (Streamlit)**  
+       - Renders the login screen, main analysis interface, and documentation pages.  
+       - Provides a single text area for users to describe their transformation situation.  
+       - Displays progress, live agent thoughts, metrics, and analysis history.
+
+    2. **Authentication Layer**  
+       - Simple username/password login with **SHA-256 hashed passwords**.  
+       - Stores an `authenticated` flag and `username` in `st.session_state`.  
+       - Ensures only logged-in users can access the assistant and documentation pages.
+
+    3. **LLM Backend (OpenAI GPT-4)**  
+       - Accessed via the `openai` (OpenAI) Python client.  
+       - Uses **streaming chat completions** for each agent to capture incremental output.  
+       - The API key is read securely from `st.secrets["OPENAI_API_KEY"]`.
+
+    4. **Agent Orchestrator**  
+       - Implemented as the `AgentOrchestrator` class.  
+       - Manages the list of 8 agents, their statuses, outputs, and per-agent timing.  
+       - Coordinates the sequential execution of agents using a **prompt-chaining** pattern.
+
+    5. **Observability & State**  
+       - Uses `st.session_state.agent_state` to track:
+         - Agent statuses (`pending`, `running`, `complete`, `error`)  
+         - Intermediate outputs  
+         - Per-agent timing  
+       - The `display_progress` method renders:
+         - Overall progress bar  
+         - Time elapsed and estimated remaining time  
+         - Per-agent cards with status and timing  
+         - Live "agent thoughts" (latest output snippets)
+
+    6. **Analysis History**  
+       - Stores recent analyses in `st.session_state.chat_history`.  
+       - Each record includes timestamp, input, final report, and total time taken.  
+       - Displayed as expanders at the bottom of the main page.
+    """)
+
+    st.markdown("### 2. Detailed Data Flow")
+
+    st.markdown("""
+    #### 2.1 Authentication Flow
+
+    1. When the user visits the app, `st.session_state.authenticated` is checked.  
+    2. If not authenticated, the **login_page()** is shown:
+       - User enters username and password.  
+       - Password is hashed with SHA-256 and compared against `VALID_CREDENTIALS`.  
+    3. On success, the app sets:
+       - `st.session_state.authenticated = True`  
+       - `st.session_state.username = <username>`  
+    4. Only after successful login does the user see:
+       - The agentic assistant  
+       - The **About Us** and **Methodology** pages.
+    """)
+
+    st.markdown("""
+    #### 2.2 Main Agentic Analysis Flow (Use Case A)
+
+    1. The user navigates to **“Agentic Assistant”** after logging in.  
+    2. The user describes their transformation situation in a free-text text area
+       (e.g. project context, risks, conflicts, team dynamics).  
+    3. The user clicks **“🚀 Start Deep Analysis”**:
+       - If the OpenAI API key is missing, an error is shown.  
+       - If the input is empty, a warning is shown.  
+    4. A new `AgentOrchestrator` instance is created, and `run_sequential_analysis()` is called.  
+
+    Inside `run_sequential_analysis()`:
+
+    - **Agent 1 – Orchestrator**  
+      - Creates a short **execution plan** describing what the analysis will focus on.
+
+    - **Agent 2 – Data Extraction**  
+      - Extracts key entities, timelines, sentiments, and main concerns from the text.  
+      - Outputs a structured bullet-point summary.
+
+    - **Agent 3 – Risk Analysis**  
+      - Identifies early warning signs, risk severity (1–10), dependencies, and bottlenecks.
+
+    - **Agent 4 – Stakeholder Analysis**  
+      - Analyses stakeholders, resistance patterns, communication gaps, power dynamics, and readiness.
+
+    - **Agent 5 – Framework Advisor**  
+      - Suggests relevant change frameworks (e.g. ADKAR, Kotter) and identifies the current stage.  
+      - Recommends framework-specific practices.
+
+    - **Agent 6 – Action Planning**  
+      - Produces a list of priority actions, quick wins vs strategic initiatives, timelines, and success metrics.
+
+    - **Agent 7 – Quality Assurance**  
+      - Reviews all previous outputs for contradictions, gaps, feasibility, and unaddressed risks.
+
+    - **Agent 8 – Synthesis**  
+      - Produces a final, executive-style report with:
+        - Executive summary  
+        - Key findings  
+        - Critical risks  
+        - Recommended actions  
+        - Next steps
+
+    5. For each agent, `call_agent()`:
+       - Builds a **system prompt** describing the agent role.  
+       - Optionally passes **context** from previous agents.  
+       - Calls `client.chat.completions.create(..., stream=True)` to get streamed output.  
+       - Updates the `results` dictionary and agent status for observability.  
+
+    6. Once all agents complete:
+       - Total time is computed.  
+       - The final synthesis report is rendered at the top.  
+       - Detailed outputs from each agent are shown in expandable sections.  
+       - A summary of metrics (total time, agents executed, average time per agent) is displayed.  
+
+    7. The app saves a record into `st.session_state.chat_history`:
+       - Timestamp  
+       - Input text  
+       - Final report  
+       - Total time taken
+    """)
+
+    st.markdown("### 3. Use Case Flowcharts")
+
+    st.markdown("#### 3.1 Use Case A – Deep Agentic Transformation Analysis")
+
+    st.markdown("""
+    **Textual Flowchart (for your slide diagram):**
+
+    - **Start**  
+    - ➜ User accesses app URL  
+    - ➜ Login Page  
+      - Enter username & password  
+      - **Decision**: Credentials valid?  
+        - No ➜ Show error → back to Login  
+        - Yes ➜ Set `authenticated = True` → go to Agentic Assistant  
+    - ➜ Agentic Assistant Page  
+      - User types transformation situation in text area  
+      - Clicks **"Start Deep Analysis"**  
+      - **Decision**: Input empty?  
+        - Yes ➜ Show warning → wait for valid input  
+        - No ➜ Continue  
+      - **Decision**: OpenAI API key available?  
+        - No ➜ Show error → stop  
+        - Yes ➜ Create `AgentOrchestrator`  
+    - ➜ Run `run_sequential_analysis()`  
+      - Agent 1: Orchestrator (plan)  
+      - Agent 2: Data Extraction  
+      - Agent 3: Risk Analysis  
+      - Agent 4: Stakeholder Analysis  
+      - Agent 5: Framework Advisor  
+      - Agent 6: Action Planning  
+      - Agent 7: Quality Assurance  
+      - Agent 8: Synthesis (final report)  
+      - After each agent:
+        - Update agent status  
+        - Update progress bar & metrics  
+        - Update "Live Agent Thoughts"  
+    - ➜ Display final report + detailed agent outputs  
+    - ➜ Save to analysis history  
+    - ➜ **End**
+    """)
+
+    st.markdown("#### 3.2 Use Case B – Analysis History & Reflection")
+
+    st.markdown("""
+    **Textual Flowchart (for your slide diagram):**
+
+    - **Start**  
+    - ➜ User logs in and navigates to **Agentic Assistant**  
+    - ➜ Scroll down to **"📜 Analysis History"**  
+    - **Decision**: Any past analyses stored in `chat_history`?  
+      - No ➜ Show nothing / message (no history yet) → **End**  
+      - Yes ➜ Show recent analyses as expandable items  
+    - ➜ User selects an analysis from the list  
+      - Expander shows:
+        - Original input (truncated)  
+        - Final report  
+        - Time taken  
+    - ➜ User reviews, compares, or reuses the recommendations for follow-up planning  
+    - ➜ **End**
+    """)
+
+    st.markdown("### 4. Prompt Engineering & Safety Measures")
+
+    st.markdown("""
+    - Each agent has a **clearly defined system prompt** that:
+      - Describes the agent's specialised role  
+      - Specifies what to extract or analyse  
+      - Enforces a structured, markdown-friendly output
+
+    - The model is **not** allowed to execute code or call external tools beyond the chat API.  
+    - Sensitive implementation details such as API keys remain only in `st.secrets` and are never
+      exposed in any prompt or UI.  
+    - Users are reminded that this is a **prototype** and should not enter confidential data.
+
+    While this prototype does not implement advanced prompt-injection defences, the constrained
+    design (no arbitrary tool execution, no external file access) reduces the attack surface.
+    """)
+
+    st.markdown("### 5. Limitations & Future Enhancements")
+
+    st.markdown("""
+    **Current Limitations**
+
+    - Only processes one free-text description at a time.  
+    - Does not yet integrate with real project management or ticketing systems.  
+    - Does not persist results beyond the current session (no database).  
+    - Safety measures are basic; adversarial prompts are not fully mitigated.
+
+    **Potential Future Improvements**
+
+    - Connect to real project data (e.g. sprint metrics, risk registers).  
+    - Store and query analyses in a database for long-term tracking.  
+    - Add more robust prompt-injection and misuse detection.  
+    - Introduce additional agents (e.g. scenario simulation, communication plan drafting).  
+    - Extend to multiple pages with different types of transformation tools.
+    """)
+
 # Main application logic
 if not st.session_state.authenticated:
     login_page()
