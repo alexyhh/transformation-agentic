@@ -597,8 +597,7 @@ def about_page():
     st.markdown("""
     This assistant is designed for:
 
-    - Transformation / change management teams  
-    - Project and programme managers  
+    - Project managers  
     - Digital transformation offices  
     - Leaders who need quick, structured insight from narrative updates
     """)
@@ -609,7 +608,7 @@ def about_page():
     - No external documents or databases are queried in this prototype.  
     - The app does **not** store data permanently in a database; recent runs are kept only in
       the in-memory **session state** for the current session's "Analysis History".  
-    - The LLM backend (e.g. OpenAI GPT-4) is used for:
+    - The LLM backend is used for:
       - Understanding the user's description  
       - Running each specialised agent  
       - Generating the final report  
